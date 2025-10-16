@@ -205,8 +205,6 @@ public function sendPushNotification(Request $request)
     $armessage = $request->artextmessage ?? "message";
     $artitle = $request->artitlemessage ?? "title";
     $userid = $request->user_id;
-    $requestid = $request->request_id;
-    $requesttype = $request->request_type;
 
     $user = User::find($userid);
     if (!$user || !$user->device_token) {
@@ -216,9 +214,73 @@ public function sendPushNotification(Request $request)
                          ->header('Expires', '0');
     }
 
-    // إرسال FCM مع تحديث Access Token لكل رسالة
-    $this->sendFCM($user->device_token, $title, $message, true);
+    // مسار مؤقت للملف JSON
+    $credentialsPath = storage_path('app/json/capital-insurance.json');
 
+    if (!file_exists($credentialsPath)) {
+        $jsonContent = base64_decode(env('FIREBASE_CREDENTIALS_BASE64'));
+        file_put_contents($credentialsPath, $jsonContent);
+        chmod($credentialsPath, 0600);
+    }
+
+    // إعداد Google Client
+    $client = new GoogleClient();
+    $client->setAuthConfig($credentialsPath);
+    $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+
+    try {
+        $accessToken = $client->fetchAccessTokenWithAssertion()['access_token'];
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Cannot fetch Firebase access token',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+
+    $header = [
+        'Authorization: Bearer ' . $accessToken,
+        'Content-Type: application/json',
+    ];
+
+    // إرسال Notification
+    $postdata = [
+        "message" => [
+            "token" => $user->device_token,
+            "notification" => [
+                "title" => $title,
+                "body" => $message,
+            ],
+            "apns" => [
+                "payload" => [
+                    "aps" => [
+                        "alert" => [
+                            "title" => $title,
+                            "body" => $message
+                        ],
+                        "sound" => "default"
+                    ]
+                ]
+            ]
+        ]
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/v1/projects/capital-insurance-8134f/messages:send');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    \Log::info("FCM Response: HTTP $httpCode, Body: $result");
+
+    // حفظ الإشعار في قاعدة البيانات
     NotificationSender::create([
         'user_id' => $userid,
         'notification_title' => $title,
@@ -227,8 +289,6 @@ public function sendPushNotification(Request $request)
         'ar_notification_text' => $armessage,
         'notification_date' => Carbon::now('Africa/Cairo')->format('Y-m-d'),
         'notification_time' => Carbon::now('Africa/Cairo')->format('H:i:s'),
-        'request_id' => $requestid,
-        'request_type' => $requesttype,
     ]);
 
     return response()->json(['success' => 'Notification sent'], 200)
@@ -255,9 +315,73 @@ public function sendSingleNotificationClaim(Request $request)
                          ->header('Expires', '0');
     }
 
-    // إرسال FCM مع تحديث Access Token لكل رسالة
-    $this->sendFCM($user->device_token, $title, $message, true);
+    // مسار مؤقت للملف JSON
+    $credentialsPath = storage_path('app/json/capital-insurance.json');
 
+    if (!file_exists($credentialsPath)) {
+        $jsonContent = base64_decode(env('FIREBASE_CREDENTIALS_BASE64'));
+        file_put_contents($credentialsPath, $jsonContent);
+        chmod($credentialsPath, 0600);
+    }
+
+    // إعداد Google Client
+    $client = new GoogleClient();
+    $client->setAuthConfig($credentialsPath);
+    $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+
+    try {
+        $accessToken = $client->fetchAccessTokenWithAssertion()['access_token'];
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Cannot fetch Firebase access token',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+
+    $header = [
+        'Authorization: Bearer ' . $accessToken,
+        'Content-Type' => 'application/json',
+    ];
+
+    // إرسال Notification
+    $postdata = [
+        "message" => [
+            "token" => $user->device_token,
+            "notification" => [
+                "title" => $title,
+                "body" => $message,
+            ],
+            "apns" => [
+                "payload" => [
+                    "aps" => [
+                        "alert" => [
+                            "title" => $title,
+                            "body" => $message
+                        ],
+                        "sound" => "default"
+                    ]
+                ]
+            ]
+        ]
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/v1/projects/capital-insurance-8134f/messages:send');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    \Log::info("FCM Response: HTTP $httpCode, Body: $result");
+
+    // حفظ الإشعار في قاعدة البيانات
     NotificationSenderClaim::create([
         'user_id' => $userid,
         'notification_title' => $title,
