@@ -325,7 +325,7 @@ class BuildingRequestController extends Controller
                         'Accept' => '*/*',
                                 ]
                                     ]);
-                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotification';
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
                             $body['titlemessage'] = 'Update Alert!';
                             $body['textmessage'] = 'Your status has been updated.';
                             $body['artitlemessage'] = 'تنبيه تحديث!';
@@ -357,7 +357,7 @@ class BuildingRequestController extends Controller
                         'Accept' => '*/*',
                                 ]
                                     ]);
-                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotification';
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
                             $body['titlemessage'] = 'Update Alert!';
                             $body['textmessage'] = 'Your status has been updated.';
                             $body['artitlemessage'] = 'تنبيه تحديث!';
@@ -394,7 +394,7 @@ class BuildingRequestController extends Controller
                         'Accept' => '*/*',
                                 ]
                                     ]);
-                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotification';
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
                             $body['titlemessage'] = 'Update Alert!';
                             $body['textmessage'] = 'Your status has been updated.';
                             $body['artitlemessage'] = 'تنبيه تحديث!';
