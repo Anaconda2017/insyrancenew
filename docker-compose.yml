@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: insurance_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-insurance}
+      - DB_USERNAME=${DB_USERNAME:-root}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+    depends_on:
+      - db
+    networks:
+      - insurance_network
+
+  db:
+    image: mysql:8.0
+    container_name: insurance_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_DATABASE: ${DB_DATABASE:-insurance}
+      MYSQL_USER: ${DB_USERNAME:-insurance_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - insurance_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: insurance_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - insurance_network
+
+networks:
+  insurance_network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
+
