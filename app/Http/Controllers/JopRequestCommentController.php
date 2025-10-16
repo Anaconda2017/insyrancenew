@@ -62,7 +62,7 @@ class JopRequestCommentController extends Controller
                         'Accept' => '*/*',
                                 ]
                                     ]);
-                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotification';
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
                             $body['titlemessage'] = 'New Comment!';
                             $body['textmessage'] = 'You have a new comment received. Tap to view and respond';
                             $body['artitlemessage'] = 'تعليق جديد!';
