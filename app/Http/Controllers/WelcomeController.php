@@ -28,28 +28,36 @@ class WelcomeController extends Controller
         return $token['access_token'];
     }
 
- public function sendPushNotification(Request $request)
-    {
-        $message = $request->textmessage;
-        $title = $request->titlemessage;
-        $armessage = $request->artextmessage;
-        $artitle = $request->artitlemessage;
+public function sendPushNotification(Request $request)
+{
+    $message = $request->textmessage;
+    $title = $request->titlemessage;
+    $armessage = $request->artextmessage;
+    $artitle = $request->artitlemessage;
 
-        // مسار مؤقت للملف JSON
-        $credentialsPath = storage_path('app/json/capital-insurance.json');
+    // مسار مؤقت للملف JSON
+    $credentialsPath = storage_path('app/json/capital-insurance.json');
 
-        // فك Base64 واكتب الملف لو مش موجود
-        if (!file_exists($credentialsPath)) {
-            $jsonContent = base64_decode(env('FIREBASE_CREDENTIALS_BASE64'));
-            file_put_contents($credentialsPath, $jsonContent);
-            chmod($credentialsPath, 0600); // قراءة وكتابة للمالك فقط
-        }
+    // فك Base64 واكتب الملف لو مش موجود
+    if (!file_exists($credentialsPath)) {
+        $jsonContent = base64_decode(env('FIREBASE_CREDENTIALS_BASE64'));
+        file_put_contents($credentialsPath, $jsonContent);
+        chmod($credentialsPath, 0600);
+    }
 
-        // إعداد Google Client
-        $client = new GoogleClient();
-        $client->setAuthConfig($credentialsPath);
-        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+    // إعداد Google Client
+    $client = new GoogleClient();
+    $client->setAuthConfig($credentialsPath);
+    $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
 
+    // جلب كل Device Tokens
+    $userTokens = User::whereNotNull('device_token')->pluck('device_token')->toArray();
+    $uniqueTokens = array_unique($userTokens);
+    $tokensChunks = array_chunk($uniqueTokens, 1000);
+
+    foreach ($tokensChunks as $chunk) {
+
+        // تحديث Access Token قبل كل chunk
         try {
             $accessToken = $client->fetchAccessTokenWithAssertion()['access_token'];
         } catch (\Exception $e) {
@@ -64,70 +72,62 @@ class WelcomeController extends Controller
             'Content-Type: application/json',
         ];
 
-        // جلب كل Device Tokens من المستخدمين
-        $userTokens = User::whereNotNull('device_token')->pluck('device_token')->toArray();
-        $uniqueTokens = array_unique($userTokens);
-        $tokensChunks = array_chunk($uniqueTokens, 1000); // تقسيم لتجنب تجاوز الحد
-
-        foreach ($tokensChunks as $chunk) {
-            foreach ($chunk as $deviceToken) {
-                $postdata = [
-                    "message" => [
-                        "token" => $deviceToken,
-                        "notification" => [
-                            "title" => $title,
-                            "body" => $message,
-                        ],
-                        "apns" => [
-                            "payload" => [
-                                "aps" => [
-                                    "alert" => [
-                                        "title" => $title,
-                                        "body" => $message
-                                    ],
-                                    "sound" => "default"
-                                ]
+        foreach ($chunk as $deviceToken) {
+            $postdata = [
+                "message" => [
+                    "token" => $deviceToken,
+                    "notification" => [
+                        "title" => $title,
+                        "body" => $message,
+                    ],
+                    "apns" => [
+                        "payload" => [
+                            "aps" => [
+                                "alert" => [
+                                    "title" => $title,
+                                    "body" => $message
+                                ],
+                                "sound" => "default"
                             ]
                         ]
                     ]
-                ];
+                ]
+            ];
 
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/v1/projects/capital-insurance-8134f/messages:send');
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
-                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/v1/projects/capital-insurance-8134f/messages:send');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
 
-                $result = curl_exec($ch);
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
+            $result = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
 
-                if ($httpCode !== 200) {
-                    // سجل الخطأ أو تجاهله حسب الحاجة
-                    // Log::error("FCM API Error: " . $result);
-                }
-            }
+            // سجل الرد لمراجعة أي مشاكل
+            \Log::info("FCM Response: HTTP $httpCode, Body: $result");
         }
-
-        // حفظ الإشعار في قاعدة البيانات
-        $dateNow = Carbon::now('Africa/Cairo')->format('Y-m-d');
-        $timeNow = Carbon::now('Africa/Cairo')->format('H:i:s');
-
-        NotificationSender::create([
-            'notification_title' => $title,
-            'notification_text' => $message,
-            'ar_notification_title' => $artitle,
-            'ar_notification_text' => $armessage,
-            'notification_date' => $dateNow,
-            'notification_time' => $timeNow,
-        ]);
-
-        return response()->json(['success' => 'Notifications sent successfully'], 200);
     }
+
+    // حفظ الإشعار في قاعدة البيانات
+    $dateNow = Carbon::now('Africa/Cairo')->format('Y-m-d');
+    $timeNow = Carbon::now('Africa/Cairo')->format('H:i:s');
+
+    NotificationSender::create([
+        'notification_title' => $title,
+        'notification_text' => $message,
+        'ar_notification_title' => $artitle,
+        'ar_notification_text' => $armessage,
+        'notification_date' => $dateNow,
+        'notification_time' => $timeNow,
+    ]);
+
+    return response()->json(['success' => 'Notifications sent successfully'], 200);
+}
 
 
     private function sendFCM($deviceToken, $title, $message)
