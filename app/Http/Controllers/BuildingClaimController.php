@@ -149,7 +149,7 @@ class BuildingClaimController extends Controller
                         'Accept' => '*/*',
                                 ]
                                     ]);
-                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotificationClaim';
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotificationClaim';
                             $body['titlemessage'] = 'Update Alert!';
                             $body['textmessage'] = 'Your status has been updated.';
                             $body['artitlemessage'] = 'تنبيه تحديث!';
