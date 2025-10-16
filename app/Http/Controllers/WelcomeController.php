@@ -205,6 +205,8 @@ public function sendPushNotification(Request $request)
     $armessage = $request->artextmessage ?? "message";
     $artitle = $request->artitlemessage ?? "title";
     $userid = $request->user_id;
+    $claimid = $request->request_id;
+    $claimtype = $request->request_type;
 
     $user = User::find($userid);
     if (!$user || !$user->device_token) {
@@ -289,6 +291,8 @@ public function sendPushNotification(Request $request)
         'ar_notification_text' => $armessage,
         'notification_date' => Carbon::now('Africa/Cairo')->format('Y-m-d'),
         'notification_time' => Carbon::now('Africa/Cairo')->format('H:i:s'),
+        'request_id' => $claimid,
+        'request_type' => $claimtype,
     ]);
 
     return response()->json(['success' => 'Notification sent'], 200)
@@ -390,8 +394,8 @@ public function sendSingleNotificationClaim(Request $request)
         'ar_notification_text' => $armessage,
         'notification_date' => Carbon::now('Africa/Cairo')->format('Y-m-d'),
         'notification_time' => Carbon::now('Africa/Cairo')->format('H:i:s'),
-        'claim_id' => $claimid,
-        'claim_type' => $claimtype,
+        'request_id' => $claimid,
+        'request_type' => $claimtype,
     ]);
 
     return response()->json(['success' => 'Claim notification sent'], 200)
