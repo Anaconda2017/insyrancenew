@@ -50,13 +50,7 @@ use Illuminate\Support\Facades\DB;
 
     // features routes
 
-Route::middleware(function ($request, $next) {
-    $response = $next($request);
 
-    return $response->header('Cache-Control', 'no-cache, no-store, must-revalidate')
-                    ->header('Pragma', 'no-cache')
-                    ->header('Expires', '0');
-})->group(function () {
 
     Route::prefix('auth')->group(function () {
         Route::post('/signin', 'AuthSignInController@signin');
@@ -694,7 +688,7 @@ Route::middleware(function ($request, $next) {
         Route::post('/sendSingleNotificationClaim', 'WelcomeController@sendSingleNotificationClaim')->name('sendSingleNotificationClaim');
         Route::get('/sendSingleNotificationClaim', 'WelcomeController@sendSingleNotificationClaim')->name('sendSingleNotificationClaim');
         
-    });
+    // });
 
     
     
