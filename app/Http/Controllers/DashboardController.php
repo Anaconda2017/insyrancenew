@@ -198,7 +198,7 @@ class DashboardController extends Controller
                         'Accept' => '*/*',
                                 ]
                                     ]);
-                            $URI = 'https://digitalbondmena.com/insurancenotification/sendPushNotification';
+                            $URI = 'https://api.cairohere.com/api/sendPushNotification';
                             $body['titlemessage'] = $title;
                             $body['textmessage'] = $message;
                             $body['artitlemessage'] = $artitle;
