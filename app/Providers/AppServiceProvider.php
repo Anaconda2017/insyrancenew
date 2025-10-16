@@ -8,6 +8,7 @@ use App\ContactUs;
 use App\BannerImage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Artisan;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('route:clear');
+            Artisan::call('view:clear');
+        
         Schema::defaultStringLength(191);
     
 
