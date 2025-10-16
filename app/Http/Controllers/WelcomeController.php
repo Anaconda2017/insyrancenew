@@ -198,69 +198,83 @@ public function sendPushNotification(Request $request)
         return response()->json(['success' => 'Notifications sent successfully'], 200);
     }
 
-    public function sendSingleNotification(Request $request)
-    {
-        $message = $request->textmessage ?? "message";
-        $title = $request->titlemessage ?? "title";
-        $armessage = $request->artextmessage ?? "message";
-        $artitle = $request->artitlemessage ?? "title";
-        $userid = $request->user_id;
-        $requestid = $request->request_id;
-        $requesttype = $request->request_type;
+   public function sendSingleNotification(Request $request)
+{
+    $message = $request->textmessage ?? "message";
+    $title = $request->titlemessage ?? "title";
+    $armessage = $request->artextmessage ?? "message";
+    $artitle = $request->artitlemessage ?? "title";
+    $userid = $request->user_id;
+    $requestid = $request->request_id;
+    $requesttype = $request->request_type;
 
-        $user = User::find($userid);
-        if (!$user || !$user->device_token) {
-            return response()->json(['error' => 'User not found or missing token'], 404);
-        }
-
-        $this->sendFCM($user->device_token, $title, $message);
-
-        NotificationSender::create([
-            'user_id' => $userid,
-            'notification_title' => $title,
-            'notification_text' => $message,
-            'ar_notification_title' => $artitle,
-            'ar_notification_text' => $armessage,
-            'notification_date' => Carbon::now('Africa/Cairo')->format('Y-m-d'),
-            'notification_time' => Carbon::now('Africa/Cairo')->format('H:i:s'),
-            'request_id' => $requestid,
-            'request_type' => $requesttype,
-        ]);
-
-        return response()->json(['success' => 'Notification sent'], 200);
+    $user = User::find($userid);
+    if (!$user || !$user->device_token) {
+        return response()->json(['error' => 'User not found or missing token'], 404)
+                         ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                         ->header('Pragma', 'no-cache')
+                         ->header('Expires', '0');
     }
 
-    public function sendSingleNotificationClaim(Request $request)
-    {
-        $message = $request->textmessage ?? "message";
-        $title = $request->titlemessage ?? "title";
-        $armessage = $request->artextmessage ?? "message";
-        $artitle = $request->artitlemessage ?? "title";
-        $userid = $request->user_id;
-        $claimid = $request->claim_id;
-        $claimtype = $request->claim_type;
+    // إرسال FCM مع تحديث Access Token لكل رسالة
+    $this->sendFCM($user->device_token, $title, $message, true);
 
-        $user = User::find($userid);
-        if (!$user || !$user->device_token) {
-            return response()->json(['error' => 'User not found or missing token'], 404);
-        }
+    NotificationSender::create([
+        'user_id' => $userid,
+        'notification_title' => $title,
+        'notification_text' => $message,
+        'ar_notification_title' => $artitle,
+        'ar_notification_text' => $armessage,
+        'notification_date' => Carbon::now('Africa/Cairo')->format('Y-m-d'),
+        'notification_time' => Carbon::now('Africa/Cairo')->format('H:i:s'),
+        'request_id' => $requestid,
+        'request_type' => $requesttype,
+    ]);
 
-        $this->sendFCM($user->device_token, $title, $message);
+    return response()->json(['success' => 'Notification sent'], 200)
+                     ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                     ->header('Pragma', 'no-cache')
+                     ->header('Expires', '0');
+}
 
-        NotificationSenderClaim::create([
-            'user_id' => $userid,
-            'notification_title' => $title,
-            'notification_text' => $message,
-            'ar_notification_title' => $artitle,
-            'ar_notification_text' => $armessage,
-            'notification_date' => Carbon::now('Africa/Cairo')->format('Y-m-d'),
-            'notification_time' => Carbon::now('Africa/Cairo')->format('H:i:s'),
-            'claim_id' => $claimid,
-            'claim_type' => $claimtype,
-        ]);
+public function sendSingleNotificationClaim(Request $request)
+{
+    $message = $request->textmessage ?? "message";
+    $title = $request->titlemessage ?? "title";
+    $armessage = $request->artextmessage ?? "message";
+    $artitle = $request->artitlemessage ?? "title";
+    $userid = $request->user_id;
+    $claimid = $request->claim_id;
+    $claimtype = $request->claim_type;
 
-        return response()->json(['success' => 'Claim notification sent'], 200);
+    $user = User::find($userid);
+    if (!$user || !$user->device_token) {
+        return response()->json(['error' => 'User not found or missing token'], 404)
+                         ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                         ->header('Pragma', 'no-cache')
+                         ->header('Expires', '0');
     }
+
+    // إرسال FCM مع تحديث Access Token لكل رسالة
+    $this->sendFCM($user->device_token, $title, $message, true);
+
+    NotificationSenderClaim::create([
+        'user_id' => $userid,
+        'notification_title' => $title,
+        'notification_text' => $message,
+        'ar_notification_title' => $artitle,
+        'ar_notification_text' => $armessage,
+        'notification_date' => Carbon::now('Africa/Cairo')->format('Y-m-d'),
+        'notification_time' => Carbon::now('Africa/Cairo')->format('H:i:s'),
+        'claim_id' => $claimid,
+        'claim_type' => $claimtype,
+    ]);
+
+    return response()->json(['success' => 'Claim notification sent'], 200)
+                     ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                     ->header('Pragma', 'no-cache')
+                     ->header('Expires', '0');
+}
 
     public function sendOrderNotification(Request $request)
     {
