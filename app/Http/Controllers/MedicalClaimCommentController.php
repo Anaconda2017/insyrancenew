@@ -91,7 +91,7 @@ class MedicalClaimCommentController extends Controller
                         'Accept' => '*/*',
                                 ]
                                     ]);
-                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotificationClaim';
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotificationClaim';
                             $body['titlemessage'] = 'New Comment!';
                             $body['textmessage'] = 'You have a new comment received. Tap to view and respond';
                             $body['artitlemessage'] = 'تعليق جديد!';
