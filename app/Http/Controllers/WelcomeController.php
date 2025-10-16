@@ -28,7 +28,7 @@ class WelcomeController extends Controller
         return $token['access_token'];
     }
 
-    public function sendPushNotification(Request $request)
+   public function sendPushNotification(Request $request)
 {
     $message = $request->textmessage;
     $title = $request->titlemessage;
@@ -43,16 +43,46 @@ class WelcomeController extends Controller
     // Path to Firebase service account JSON
     $credentialsFilePath = storage_path('app/json/capital-insurance-8134f-a0ba5c65d52f.json');
 
+    // Check if file exists
+    if (!file_exists($credentialsFilePath)) {
+        return response()->json([
+            'error' => "JSON file not found at path: $credentialsFilePath"
+        ], 500);
+    }
+
+    // Check if file is readable
+    if (!is_readable($credentialsFilePath)) {
+        return response()->json([
+            'error' => "JSON file exists but is not readable. Check file permissions."
+        ], 500);
+    }
+
     // Initialize Google Client and get access token
     $client = new GoogleClient();
     $client->setAuthConfig($credentialsFilePath);
     $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
 
     try {
-        $accessToken = $client->fetchAccessTokenWithAssertion()['access_token'];
+        $tokenData = $client->fetchAccessTokenWithAssertion();
+
+        if (isset($tokenData['error'])) {
+            return response()->json([
+                'error' => "Firebase Access Token Error: " . $tokenData['error_description'] ?? $tokenData['error']
+            ], 500);
+        }
+
+        $accessToken = $tokenData['access_token'] ?? null;
+
+        if (!$accessToken) {
+            return response()->json([
+                'error' => "Access token not returned. Check your service account JSON."
+            ], 500);
+        }
+
     } catch (\Exception $e) {
-        \Log::error("Firebase Access Token Error: " . $e->getMessage());
-        return response()->json(['error' => 'Cannot fetch Firebase access token'], 500);
+        return response()->json([
+            'error' => "Exception while fetching access token: " . $e->getMessage()
+        ], 500);
     }
 
     $headers = [
