@@ -8,7 +8,12 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+<<<<<<< HEAD
 use App\Services\NotificationDispatchService;
+=======
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
 class MotorRequestCommentController extends Controller
 {
@@ -56,6 +61,7 @@ class MotorRequestCommentController extends Controller
         $requestArray['comment_date'] = Carbon::now('Africa/Cairo')->format('Y-m-d H:i:s');
         
         if($request->user_role == 'admin') {
+<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingle([
                 'titlemessage' => 'New Comment!',
                 'textmessage' => 'You have a new comment received. Tap to view and respond',
@@ -65,6 +71,23 @@ class MotorRequestCommentController extends Controller
                 'request_id' => $request->request_id,
                 'request_type' => 'motor',
             ]);
+=======
+            $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
+                            $body['titlemessage'] = 'New Comment!';
+                            $body['textmessage'] = 'You have a new comment received. Tap to view and respond';
+                            $body['artitlemessage'] = 'تعليق جديد!';
+                            $body['artextmessage'] = 'لديك تعليق جديد. اضغط للعرض والرد.';
+                            $body['user_id'] = $request->reciver_id;
+                            $body['request_id'] = $request->request_id;
+                            $body['request_type'] = "motor" ;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
 
         $comment = MotorRequestComment::create($requestArray);

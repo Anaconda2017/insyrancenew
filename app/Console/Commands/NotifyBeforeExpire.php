@@ -11,7 +11,12 @@ use App\MotorRequest;
 use App\JopRequest;
 use App\BuildingRequest;
 use App\MedicalRequest;
+<<<<<<< HEAD
 use App\Services\NotificationDispatchService;
+=======
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
 class NotifyBeforeExpire extends Command
 {
@@ -33,6 +38,7 @@ class NotifyBeforeExpire extends Command
 
         // dd($jobs->count() , $fromDate , $toDate);
         foreach ($Motorjobs as $job) {
+<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingle([
                 'titlemessage' => '⚠️ Reminder',
                 'textmessage' => 'Your policy is about to expire soon. Please take action to renew.',
@@ -40,10 +46,29 @@ class NotifyBeforeExpire extends Command
                 'request_id' => $job->id,
                 'request_type' => 'motor',
             ]);
+=======
+            
+                $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotification';
+                            $body['titlemessage'] = '⚠️ Reminder';
+                            $body['textmessage'] = 'Your policy is about to expire soon. Please take action to renew.';
+                            $body['user_id'] = $job->user_id;
+                            $body['request_id'] = $job->id;
+                            $body['request_type'] = "motor" ;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+
+                
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
         
         
         foreach ($Buildingjobs as $job) {
+<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingle([
                 'titlemessage' => '⚠️ Reminder',
                 'textmessage' => 'Your policy is about to expire soon. Please take action to renew.',
@@ -51,10 +76,29 @@ class NotifyBeforeExpire extends Command
                 'request_id' => $job->id,
                 'request_type' => 'building',
             ]);
+=======
+            
+                $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotification';
+                            $body['titlemessage'] = '⚠️ Reminder';
+                            $body['textmessage'] = 'Your policy is about to expire soon. Please take action to renew.';
+                            $body['user_id'] = $job->user_id;
+                            $body['request_id'] = $job->id;
+                            $body['request_type'] = "building" ;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+
+                
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
         
         
         foreach ($Medicaljobs as $job) {
+<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingle([
                 'titlemessage' => '⚠️ Reminder',
                 'textmessage' => 'Your policy is about to expire soon. Please take action to renew.',
@@ -62,10 +106,29 @@ class NotifyBeforeExpire extends Command
                 'request_id' => $job->id,
                 'request_type' => 'medical',
             ]);
+=======
+            
+                $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotification';
+                            $body['titlemessage'] = '⚠️ Reminder';
+                            $body['textmessage'] = 'Your policy is about to expire soon. Please take action to renew.';
+                            $body['user_id'] = $job->user_id;
+                            $body['request_id'] = $job->id;
+                            $body['request_type'] = "medical" ;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+
+               
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
         
         
         foreach ($Jopjobs as $job) {
+<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingle([
                 'titlemessage' => '⚠️ Reminder',
                 'textmessage' => 'Your policy is about to expire soon. Please take action to renew.',
@@ -73,6 +136,24 @@ class NotifyBeforeExpire extends Command
                 'request_id' => $job->id,
                 'request_type' => 'job',
             ]);
+=======
+            
+                $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://digitalbondmena.com/insurancenotification/sendSingleNotification';
+                            $body['titlemessage'] = '⚠️ Reminder';
+                            $body['textmessage'] = 'Your policy is about to expire soon. Please take action to renew.';
+                            $body['user_id'] = $job->user_id;
+                            $body['request_id'] = $job->id;
+                            $body['request_type'] = "job" ;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+
+                
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
         
             // dump($URI_Response);

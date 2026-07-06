@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
+<<<<<<< HEAD
 use App\Services\NotificationDispatchService;
+=======
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
 class BuildingClaimController extends Controller
 {
@@ -144,6 +149,7 @@ class BuildingClaimController extends Controller
         $requestArray = $request->all();
 
         if($request->status != $buildingClaim->status) {
+<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingleClaim([
                 'titlemessage' => 'Update Alert!',
                 'textmessage' => 'Your status has been updated.',
@@ -153,6 +159,23 @@ class BuildingClaimController extends Controller
                 'request_id' => $buildingClaim->id,
                 'request_type' => 'building',
             ]);
+=======
+            $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotificationClaim';
+                            $body['titlemessage'] = 'Update Alert!';
+                            $body['textmessage'] = 'Your status has been updated.';
+                            $body['artitlemessage'] = 'تنبيه تحديث!';
+                            $body['artextmessage'] = 'تم تحديث حالتك. ';
+                            $body['user_id'] = $buildingClaim->user_id;
+                            $body['request_id'] = $buildingClaim->id;
+                            $body['request_type'] = "building" ;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
         
         $buildingClaim->update($requestArray);

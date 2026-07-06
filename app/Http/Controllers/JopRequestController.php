@@ -6,14 +6,23 @@ use App\JopRequest;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
+<<<<<<< HEAD
 use App\Support\SafeMail;
+=======
+use Illuminate\Support\Facades\Mail;
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\User;
 use App\JopInsurance;
+<<<<<<< HEAD
 use App\Services\NotificationDispatchService;
+=======
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
 class JopRequestController extends Controller
 {
@@ -129,7 +138,11 @@ class JopRequestController extends Controller
                         
                         
                         
+<<<<<<< HEAD
                         SafeMail::send('frontend.newRegistration' , [
+=======
+                        Mail::send('frontend.newRegistration' , [
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
                         'name' => $name , 
                         'phone' => $phone,
                         'email' => $email,
@@ -322,6 +335,7 @@ class JopRequestController extends Controller
         }
 
         if($request->active_status != $jopRequest->active_status) {
+<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingle([
                 'titlemessage' => 'Update Alert!',
                 'textmessage' => 'Your status has been updated.',
@@ -331,6 +345,23 @@ class JopRequestController extends Controller
                 'request_id' => $jopRequest->id,
                 'request_type' => 'job',
             ]);
+=======
+            $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
+                            $body['titlemessage'] = 'Update Alert!';
+                            $body['textmessage'] = 'Your status has been updated.';
+                            $body['artitlemessage'] = 'تنبيه تحديث!';
+                            $body['artextmessage'] = 'تم تحديث حالتك. ';
+                            $body['user_id'] = $jopRequest->user_id;
+                            $body['request_id'] = $jopRequest->id;
+                            $body['request_type'] = "job" ;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
         $jopRequest->update($requestArray);
         
@@ -347,6 +378,7 @@ class JopRequestController extends Controller
         $jopRequest = JopRequest::findorfail($id);
         $jopRequest->update(['active_status' => 'canceled']);
         
+<<<<<<< HEAD
         app(NotificationDispatchService::class)->dispatchSingle([
             'titlemessage' => 'Update Alert!',
             'textmessage' => 'Your status has been updated.',
@@ -355,6 +387,22 @@ class JopRequestController extends Controller
             'user_id' => $jopRequest->user_id,
             'request_id' => $jopRequest->id,
         ]);
+=======
+        $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
+                            $body['titlemessage'] = 'Update Alert!';
+                            $body['textmessage'] = 'Your status has been updated.';
+                            $body['artitlemessage'] = 'تنبيه تحديث!';
+                            $body['artextmessage'] = 'تم تحديث حالتك. ';
+                            $body['user_id'] = $jopRequest->user_id;
+                            $body['request_id'] = $jopRequest->id;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
         return response()->json([
             'success' => true,
@@ -378,6 +426,7 @@ class JopRequestController extends Controller
         
         $jopRequest->update(['active_status' => $request->active_status]);
         
+<<<<<<< HEAD
         app(NotificationDispatchService::class)->dispatchSingle([
             'titlemessage' => 'Update Alert!',
             'textmessage' => 'Your status has been updated.',
@@ -386,6 +435,22 @@ class JopRequestController extends Controller
             'user_id' => $jopRequest->user_id,
             'request_id' => $jopRequest->id,
         ]);
+=======
+        $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
+                            $body['titlemessage'] = 'Update Alert!';
+                            $body['textmessage'] = 'Your status has been updated.';
+                            $body['artitlemessage'] = 'تنبيه تحديث!';
+                            $body['artextmessage'] = 'تم تحديث حالتك. ';
+                            $body['user_id'] = $jopRequest->user_id;
+                            $body['request_id'] = $jopRequest->id;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
         return response()->json([
             'success' => true,

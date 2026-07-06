@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "capital-insurance-8134f",
+  "private_key_id": "67589bc568f596bb1765299ba0b0b174a59ca97e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCknuAK1pwLEhGn\nd7tPixz3h4PdIeEi0FGZOm8v294nv63aTg/g9hr7sVqXzV7MpDsu821W8zBdpAW5\nrfBbj5MtJBwp2SX+P7RkJjoh9xIFB2OWMr6wAYFTWG7pKzC4y0Z1Y54LWArM5pzR\nQr9lqP1+EvMZaKqGaoDBRNixpJ8Ct7IzZyOxtiqIImIAx4sQDQRYCuYCuPDKz8N6\nB48LxUbo9xeb1NaOyMA9bwoJ3FG6KdsO2GGWelQ2J6YNCO+X2/2f6Au6CfL7uPtF\nynOzbThcnl+eb67BiCVT8Su+EmYxAOq/3bQJ/K3OQBoM4NnfQ6rvKw8XqoFGTAe6\nYJZCqCexAgMBAAECggEAAL/ygEoi8s/1waADe+TD0ILPAHJXjquJO5vvBrZHKEIw\nvgZN/zXPwKa5pWhbjq4O0PNt44/+/+Yv2n0m05vvTSzVbgFdsW9D2JLt/9qau+gh\nNX1sreuL1b/Y3XoDYkwWuZEnFqEjh3RjcXaO3Z0r7meSsOJvqGYSyQ6RuBlqWf5P\nU+NfmGJ4Wd0OZk0CEjllkmYmm/vxRqL0jc3lXTr1S3GBg3QfDMxyeJ7IBfF51B8f\nq4wXP4PUKpBQ1JiiwyefowQck3qWxfSIiXQmJXAXg/OWQnIUqL+L/LKmFBcJIlC0\nKhto08osxnsUDbi4RPHZm4ZxEQKSnIRuZTpxw4O/ewKBgQDVS0dtRHEjl7dgdgm7\nvkReWO43q9Az2Nb97PctB+3FKSC1y08lKBcIwEI1rst5L/E+aF2vRgRNvVxw00RO\n8Qer8jrhLohlOHTbKNUd9PJHlaffnYQtMbNjU2f5M/S/N3y9jZGFBVqGviIA2oZb\n0bU/JGB1DgnQD1Ntne8tcp7GZwKBgQDFlMMajBaDb9qzMTL8JTcHFTgeJLGgk29j\nj0BD49VXYauJuomMl5TBSzdtP59oG6D91/9f5FW1hNDfifwQwDogPtSJqc9hjrAx\nRtKD+yrLATF+sHDGv0Cdxawfd5Q9nXYLDckGHDdSqwszhpg/u/rdiLZeeW2PQvD1\nT5veV4fiJwKBgQC3g8yRy9hYWlnxib24Je1nC7byeUZqxX+8/FxzByZhg5BcOe//\ntS2UXu7Yh2sT+tbi7iLlAiYDyRA3Ft7n2OPT4lcclc/O3zNTuR8cZjrqsm28rScj\nR2bj58hGlphWyWPvJ1X0EHYiBob1Gw+NArKiACdpr0lsFTOf1coK3VqUswKBgEzc\nxVWTf8KcBfFFx3bNp22K9KzNS4iTMncBqFeAz2LR7SCEP7RA166mayaF5KZkcSmv\nGHqeYjVeOL9td3Cwxyv6JUZ0l+d00dgpnAWZ9RjKGw4U55p5llKKLp6DL1kU43ID\nZ9uHqIHxZkciKiJJJ5t87q0sAdIEkaZs1M8XMBZrAoGAZ0FKIHoKnuyivW+aZTLb\n5cOlZSOVZ7LYaKtWKTgM3FnM4KkTSQo8palqIIrZSAal24pXLCU6plF97Flbw6lV\nnov55lbparcgG2SsPD90UN5EgJXx85tsrbd+U++b4bycKxfKm8wsSdApB6P+DPBu\nlg8Uw7lyhUDe5ErXK0jrazE=\n-----END PRIVATE KEY-----\n",
+  "client_email": "insurance@capital-insurance-8134f.iam.gserviceaccount.com",
+  "client_id": "102557804487984783377",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/insurance%40capital-insurance-8134f.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

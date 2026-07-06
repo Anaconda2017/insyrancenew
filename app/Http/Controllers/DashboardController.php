@@ -12,7 +12,12 @@ use App\User;
 use App\UserTimeSpent;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use App\Services\NotificationDispatchService;
+=======
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 use App\NotificationSender;
 use App\NotificationSenderClaim;
 use App\BuildingRequest;
@@ -185,12 +190,35 @@ class DashboardController extends Controller
         $armessage = $request->artextmessage;
         $artitle = $request->artitlemessage;
         
+<<<<<<< HEAD
         app(NotificationDispatchService::class)->dispatchBroadcast([
             'titlemessage' => $title,
             'textmessage' => $message,
             'artitlemessage' => $artitle,
             'artextmessage' => $armessage,
         ]);
+=======
+        $client = new Client();
+
+        // Prepare the data to send in the POST request
+        // dd($title , $message);
+
+    
+        
+        
+        $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendPushNotification';
+                            $body['titlemessage'] = $title;
+                            $body['textmessage'] = $message;
+                            $body['artitlemessage'] = $artitle;
+                            $body['artextmessage'] = $armessage;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
     
         return response()->json(['success' => 'Notifications sent to all users'], 200);

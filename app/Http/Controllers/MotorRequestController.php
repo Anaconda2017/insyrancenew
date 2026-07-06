@@ -8,7 +8,12 @@ use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+<<<<<<< HEAD
 use App\Services\NotificationDispatchService;
+=======
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
 
 
@@ -138,6 +143,7 @@ class MotorRequestController extends Controller
         
         if($request->active_status != $motorRequest->active_status) {
             
+<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingle([
                 'titlemessage' => 'Update Alert!',
                 'textmessage' => 'Your status has been updated.',
@@ -147,6 +153,23 @@ class MotorRequestController extends Controller
                 'request_id' => $motorRequest->id,
                 'request_type' => 'motor',
             ]);
+=======
+            $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
+                            $body['titlemessage'] = 'Update Alert!';
+                            $body['textmessage'] = 'Your status has been updated.';
+                            $body['artitlemessage'] = 'تنبيه تحديث!';
+                            $body['artextmessage'] = 'تم تحديث حالتك. ';
+                            $body['user_id'] = $motorRequest->user_id;
+                            $body['request_id'] = $motorRequest->id;
+                            $body['request_type'] = "motor" ;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
         $motorRequest->update($requestArray);
         
@@ -164,6 +187,7 @@ class MotorRequestController extends Controller
         $motorRequest = MotorRequest::findorfail($id);
         $motorRequest->update(['active_status' => 'canceled']);
         
+<<<<<<< HEAD
         app(NotificationDispatchService::class)->dispatchSingle([
             'titlemessage' => 'Update Alert!',
             'textmessage' => 'Your status has been updated.',
@@ -172,6 +196,22 @@ class MotorRequestController extends Controller
             'user_id' => $motorRequest->user_id,
             'request_id' => $motorRequest->id,
         ]);
+=======
+        $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
+                            $body['titlemessage'] = 'Update Alert!';
+                            $body['textmessage'] = 'Your status has been updated.';
+                            $body['artitlemessage'] = 'تنبيه تحديث!';
+                            $body['artextmessage'] = 'تم تحديث حالتك. ';
+                            $body['user_id'] = $motorRequest->user_id;
+                            $body['request_id'] = $motorRequest->id;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         
         return response()->json([   
             'success' => true,
@@ -197,6 +237,7 @@ class MotorRequestController extends Controller
         $motorRequest->update(['active_status' => $request->active_status]);
         
         
+<<<<<<< HEAD
         app(NotificationDispatchService::class)->dispatchSingle([
             'titlemessage' => 'Update Alert!',
             'textmessage' => 'Your status has been updated.',
@@ -205,6 +246,22 @@ class MotorRequestController extends Controller
             'user_id' => $motorRequest->user_id,
             'request_id' => $motorRequest->id,
         ]);
+=======
+        $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
+                        'Accept' => '*/*',
+                                ]
+                                    ]);
+                            $URI = 'https://api.cairohere.com/api/sendSingleNotification';
+                            $body['titlemessage'] = 'Update Alert!';
+                            $body['textmessage'] = 'Your status has been updated.';
+                            $body['artitlemessage'] = 'تنبيه تحديث!';
+                            $body['artextmessage'] = 'تم تحديث حالتك. ';
+                            $body['user_id'] = $motorRequest->user_id;
+                            $body['request_id'] = $motorRequest->id;
+                            
+                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
+                            $URI_Response =json_decode($URI_Response->getBody(), true);
+>>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
         return response()->json([
             'success' => true,
