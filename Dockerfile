@@ -20,7 +20,7 @@ RUN apk add --no-cache \
     linux-headers
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install -j"$(nproc)" \
+    && docker-php-ext-install \
         pdo_mysql \
         mbstring \
         exif \
@@ -29,7 +29,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
         gd \
         zip \
         intl \
-        opcache
+        opcache \
+    && apk del --no-cache .phpize-deps-configure 2>/dev/null || true
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 

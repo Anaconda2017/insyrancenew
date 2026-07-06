@@ -6,12 +6,8 @@ use App\User;
 use Carbon\Carbon;
 use App\NotificationSender;
 use Illuminate\Filesystem\Filesystem;
-<<<<<<< HEAD
 use App\Support\SafeMail;
 use App\Services\NotificationDispatchService;
-=======
-use Illuminate\Support\Facades\Mail;
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\ArregationSystem;
@@ -80,34 +76,11 @@ class HomeController extends Controller
         $message = $request->textmessage;
         $title = $request->titlemessage;
         
-<<<<<<< HEAD
         app(NotificationDispatchService::class)->dispatchBroadcast([
             'titlemessage' => $title,
             'textmessage' => $message,
         ]);
 
-=======
-        $client = new Client();
-
-        // Prepare the data to send in the POST request
-        // dd($title , $message);
-
-    
-        
-        
-        $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
-                        'Accept' => '*/*',
-                                ]
-                                    ]);
-                            $URI = 'https://digitalbondmena.com/insurancenotification/sendPushNotification';
-                            $body['titlemessage'] = $title;
-                            $body['textmessage'] = $message;
-                            
-                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
-                            $URI_Response =json_decode($URI_Response->getBody(), true);
-
-    
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         return response()->json(['success' => 'Notifications sent to all users'], 200);
     }
      
@@ -303,11 +276,7 @@ class HomeController extends Controller
             $email = $request->email ;
             $newmessage = $request->message ;
             
-<<<<<<< HEAD
             SafeMail::send('frontend.contactform' , [
-=======
-            Mail::send('frontend.contactform' , [
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
                 'name' => $name , 
                 'phone' => $phone,
                 'email' => $email,
@@ -326,11 +295,7 @@ class HomeController extends Controller
                 }); 
                 
                 
-<<<<<<< HEAD
             SafeMail::send('frontend.contactform' , [
-=======
-            Mail::send('frontend.contactform' , [
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
                 'name' => $name , 
                 'phone' => $phone,
                 'email' => $email,

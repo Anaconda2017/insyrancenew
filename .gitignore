@@ -6,7 +6,6 @@
 .env
 .env.backup
 .phpunit.result.cache
-<<<<<<< HEAD
 /storage/app/json/*.json
 !/storage/app/json/.gitignore
 composer-out.txt
@@ -14,8 +13,6 @@ composer-full.log
 composer-install.log
 ci.log
 ci2.log
-=======
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 Homestead.json
 Homestead.yaml
 npm-debug.log

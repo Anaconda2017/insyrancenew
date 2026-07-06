@@ -10,12 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
-<<<<<<< HEAD
 use App\Services\NotificationDispatchService;
-=======
-use Illuminate\Support\Facades\Http;
-use GuzzleHttp\Client;
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
 class MedicalClaimController extends Controller
 {
@@ -144,7 +139,6 @@ class MedicalClaimController extends Controller
         $requestArray = $request->all();
 
         if($request->status != $medicalClaim->status) {
-<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingleClaim([
                 'titlemessage' => 'Update Alert!',
                 'textmessage' => 'Your status has been updated.',
@@ -154,24 +148,6 @@ class MedicalClaimController extends Controller
                 'request_id' => $medicalClaim->id,
                 'request_type' => 'medical',
             ]);
-=======
-            $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
-                        'Accept' => '*/*',
-                                ]
-                                    ]);
-                            $URI = 'https://api.cairohere.com/api/sendSingleNotificationClaim';
-                            $body['titlemessage'] = 'Update Alert!';
-                            $body['titlemessage'] = 'Update Alert!';
-                            $body['textmessage'] = 'Your status has been updated.';
-                            $body['artitlemessage'] = 'تنبيه تحديث!';
-                            $body['artextmessage'] = 'تم تحديث حالتك. ';
-                            $body['user_id'] = $medicalClaim->user_id;
-                            $body['request_id'] = $medicalClaim->id;
-                            $body['request_type'] = "medical" ;
-                            
-                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
-                            $URI_Response =json_decode($URI_Response->getBody(), true);
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
         
         $medicalClaim->update($requestArray);

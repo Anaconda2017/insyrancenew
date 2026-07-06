@@ -11,12 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Intervention\Image\ImageManagerStatic as Image;
-<<<<<<< HEAD
 use App\Services\NotificationDispatchService;
-=======
-use Illuminate\Support\Facades\Http;
-use GuzzleHttp\Client;
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
 
 class JopClaimCommentController extends Controller
@@ -92,7 +87,6 @@ class JopClaimCommentController extends Controller
         $requestArray['comment_date'] = Carbon::now('Africa/Cairo')->format('Y-m-d H:i:s');
         
         if($request->user_role == 'admin') {
-<<<<<<< HEAD
             app(NotificationDispatchService::class)->dispatchSingleClaim([
                 'titlemessage' => 'New Comment!',
                 'textmessage' => 'You have a new comment received. Tap to view and respond',
@@ -102,23 +96,6 @@ class JopClaimCommentController extends Controller
                 'request_id' => $request->claim_id,
                 'request_type' => 'job',
             ]);
-=======
-            $client = new \GuzzleHttp\Client(['headers' => ['Content-Type' => 'application/json',
-                        'Accept' => '*/*',
-                                ]
-                                    ]);
-                            $URI = 'https://api.cairohere.com/api/sendSingleNotificationClaim';
-                            $body['titlemessage'] = 'New Comment!';
-                            $body['textmessage'] = 'You have a new comment received. Tap to view and respond';
-                            $body['artitlemessage'] = 'تعليق جديد!';
-                            $body['artextmessage'] = 'لديك تعليق جديد. اضغط للعرض والرد.';
-                            $body['user_id'] = $request->reciver_id;
-                            $body['request_id'] = $request->claim_id;
-                            $body['request_type'] = "job" ;
-                            
-                            $URI_Response = $client->request('GET',$URI,['body'=>json_encode($body)]);
-                            $URI_Response =json_decode($URI_Response->getBody(), true);
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
         }
 
         $jopClaimComment = JopClaimComment::create($requestArray);

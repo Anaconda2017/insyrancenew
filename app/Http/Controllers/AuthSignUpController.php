@@ -10,11 +10,7 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-<<<<<<< HEAD
 use App\Support\SafeMail;
-=======
-use Illuminate\Support\Facades\Mail;
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
 
 class AuthSignUpController extends Controller
 {
@@ -74,11 +70,7 @@ class AuthSignUpController extends Controller
         ]);
         
         
-<<<<<<< HEAD
         SafeMail::send('frontend.newRegistration' , [
-=======
-        Mail::send('frontend.newRegistration' , [
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
                 'name' => $name , 
                 'phone' => $phone,
                 'email' => $email,
@@ -134,11 +126,7 @@ class AuthSignUpController extends Controller
                 $usercode = $user->forget_code;
 
 
-<<<<<<< HEAD
                 SafeMail::send('frontend.resetCode' , [
-=======
-                Mail::send('frontend.resetCode' , [
->>>>>>> b3b5690cdf7b7d2d6cdc35201acca0827eaaf74d
                     'username' => $username , 
                     'userphone' => $userphone,
                     'useremail' => $useremail,
