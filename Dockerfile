@@ -1,7 +1,6 @@
-# Multi-stage build for Laravel application
-FROM php:7.4-fpm-alpine AS base
+# Laravel 12 requires PHP 8.2+
+FROM php:8.2-fpm-alpine AS base
 
-# Install system dependencies
 RUN apk add --no-cache \
     nginx \
     supervisor \
@@ -15,56 +14,53 @@ RUN apk add --no-cache \
     mysql-client \
     freetype-dev \
     libjpeg-turbo-dev \
-    libwebp-dev
+    libwebp-dev \
+    libzip-dev \
+    icu-dev \
+    linux-headers
 
-# Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install -j"$(nproc)" \
+        pdo_mysql \
+        mbstring \
+        exif \
+        pcntl \
+        bcmath \
+        gd \
+        zip \
+        intl \
+        opcache
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_MEMORY_LIMIT=-1
+
 WORKDIR /var/www/html
 
-# Copy composer files
 COPY composer.json composer.lock ./
 
-# Install PHP dependencies
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction
 
-# Copy application files
 COPY . .
 
-# Generate autoloader
-RUN composer dump-autoload --optimize --no-dev
+RUN composer dump-autoload --optimize --no-dev --no-interaction
 
-# Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Copy nginx configuration
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
-
-# Copy supervisor configuration
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Copy startup script
 COPY docker/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-# Create log directories
 RUN mkdir -p /var/log/supervisor
 
-# Expose port 80
 EXPOSE 80
 
-# Health check with generous timing
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
     CMD curl -f http://localhost/api/health || exit 1
 
-# Start application
 CMD ["/usr/local/bin/start.sh"]
-

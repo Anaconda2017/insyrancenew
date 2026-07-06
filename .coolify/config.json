@@ -7,9 +7,9 @@
   "health_check": {
     "path": "/api/health",
     "interval": "30s",
-    "timeout": "3s",
+    "timeout": "10s",
     "retries": 3,
-    "start_period": "40s"
+    "start_period": "90s"
   },
   "volumes": [
     {
