@@ -34,6 +34,13 @@ class FirebaseAuthService
         }
     }
 
+    public function getProjectId(): ?string
+    {
+        $credentials = $this->loadCredentials();
+
+        return is_array($credentials) ? ($credentials['project_id'] ?? null) : null;
+    }
+
     private function loadCredentials(): ?array
     {
         $credentialsPath = $this->resolveCredentialsPath();
@@ -85,7 +92,10 @@ class FirebaseAuthService
         }
 
         $signature = '';
-        $signed = openssl_sign("{$header}.{$payload}", $signature, $privateKey, OPENSSL_ALGORITHM_SHA256);
+        $algorithm = defined('OPENSSL_ALGORITHM_SHA256')
+            ? OPENSSL_ALGORITHM_SHA256
+            : OPENSSL_ALGO_SHA256;
+        $signed = openssl_sign("{$header}.{$payload}", $signature, $privateKey, $algorithm);
         if (!$signed) {
             Log::error('Failed to sign Firebase JWT');
 

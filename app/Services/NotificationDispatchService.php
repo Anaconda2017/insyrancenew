@@ -46,8 +46,9 @@ class NotificationDispatchService
             $requestType = $payload['request_type'] ?? null;
 
             $user = $userId ? User::find($userId) : null;
-            if ($user?->device_token) {
-                $this->pushNotificationService->sendToToken($user->device_token, $title, $message);
+            $deviceToken = trim((string) ($user?->device_token ?? ''));
+            if ($deviceToken !== '') {
+                $this->pushNotificationService->sendToToken($deviceToken, $title, $message);
             } else {
                 Log::info('Single notification saved without push: user has no device token', [
                     'user_id' => $userId,
@@ -80,8 +81,9 @@ class NotificationDispatchService
             $claimType = $payload['claim_type'] ?? $payload['request_type'] ?? null;
 
             $user = $userId ? User::find($userId) : null;
-            if ($user?->device_token) {
-                $this->pushNotificationService->sendToToken($user->device_token, $title, $message);
+            $deviceToken = trim((string) ($user?->device_token ?? ''));
+            if ($deviceToken !== '') {
+                $this->pushNotificationService->sendToToken($deviceToken, $title, $message);
             } else {
                 Log::info('Claim notification saved without push: user has no device token', [
                     'user_id' => $userId,

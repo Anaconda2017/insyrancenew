@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class PushNotificationService
 {
-    private const FCM_URL = 'https://fcm.googleapis.com/v1/projects/capital-insurance-8134f/messages:send';
     private const CURL_TIMEOUT = 15;
     private const MAX_BULK_TOKENS = 500;
 
@@ -93,12 +92,27 @@ class PushNotificationService
 
     private function dispatchFcm(string $deviceToken, string $title, string $message, string $accessToken): bool
     {
+        $projectId = $this->firebaseAuthService->getProjectId();
+        if (!$projectId) {
+            Log::warning('FCM skipped: Firebase project_id missing from credentials');
+
+            return false;
+        }
+
+        $fcmUrl = 'https://fcm.googleapis.com/v1/projects/' . $projectId . '/messages:send';
+
         $postdata = [
             'message' => [
-                'token' => $deviceToken,
+                'token' => trim($deviceToken),
                 'notification' => [
                     'title' => $title,
                     'body' => $message,
+                ],
+                'android' => [
+                    'priority' => 'high',
+                    'notification' => [
+                        'sound' => 'default',
+                    ],
                 ],
                 'apns' => [
                     'payload' => [
@@ -116,7 +130,7 @@ class PushNotificationService
 
         $ch = curl_init();
         curl_setopt_array($ch, [
-            CURLOPT_URL => self::FCM_URL,
+            CURLOPT_URL => $fcmUrl,
             CURLOPT_POST => true,
             CURLOPT_HTTPHEADER => [
                 'Authorization: Bearer ' . $accessToken,
@@ -143,8 +157,22 @@ class PushNotificationService
             return false;
         }
 
-        Log::info('FCM Response', ['http_code' => $httpCode, 'body' => $result]);
+        $success = $httpCode >= 200 && $httpCode < 300;
+        if (!$success) {
+            Log::warning('FCM send failed', [
+                'http_code' => $httpCode,
+                'body' => $result,
+                'project_id' => $projectId,
+                'token_prefix' => substr($deviceToken, 0, 20),
+            ]);
+        } else {
+            Log::info('FCM send success', [
+                'http_code' => $httpCode,
+                'project_id' => $projectId,
+                'token_prefix' => substr($deviceToken, 0, 20),
+            ]);
+        }
 
-        return $httpCode >= 200 && $httpCode < 300;
+        return $success;
     }
 }
